@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+      .navbar {
+        background: rgba(80, 32, 128, 0.97);
+        box-shadow: 0 2px 8px rgba(32,93,128,0.12);
+      }
+      .navbar-brand {
+        font-weight: bold;
+        color: #ffd700 !important;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        font-family: 'Montserrat', 'Inter', sans-serif;
+        letter-spacing: 1px;
+      }
+      .navbar-brand .logo-icon {
+        font-size: 1.3em;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        padding: 2px 7px;
+        color: white;
+        margin-right: 4px;
+      }
+      .navbar-brand .brand-text {
+        font-size: 1.15em;
+        line-height: 1.1;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .navbar-brand .brand-sub {
+        font-size: 0.7em;
+        color: #fff;
+        display: block;
+        line-height: 1;
+        margin-top: -2px;
+        font-weight: 400;
+        letter-spacing: 0.5px;
+      }
+      .nav-link { color: #fff !important; font-weight: 500;}
+      .nav-link.active { color: #ffd700 !important; }
+      .btn-outline-warning {
+        color: #ffd700;
+        border-color: #ffd700;
+        border-radius: 50px;
+        transition: all 0.3s;
+        font-weight: 600;
+        padding-left: 22px;
+        padding-right: 22px;
+      }
+      .btn-outline-warning:hover {
+        background: #ffd700;
+        color: #205d80;
+      }
+      .form-control {
+        background: rgba(255, 255, 255, 0.13);
+        border: none;
+        border-radius: 50px;
+        padding: 12px 20px;
+        color: #205d80;
+        width: 200px;
+        font-size: 1em;
+        font-weight: 500;
+        box-shadow: none;
+        transition: background 0.2s;
+      }
+      .form-control:focus {
+        background: #fff;
+        color: #205d80;
+        outline: none;
+        box-shadow: 0 0 0 2px #ffd70055;
+      }
+      /* Dropdown for mobile only */
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 20px;
+        top: 60px;
+        background-color: rgba(32,93,128,0.97);
+        min-width: 150px;
+        box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+        z-index: 1000;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .dropdown-content a {
+        color: #ffd700;
+        padding: 10px 15px;
+        text-decoration: none;
+        display: block;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+      }
+      .dropdown-content a:hover {
+        background: #205d80;
+        color: #fff;
+      }
+      @media (max-width: 991px) {
+        .navbar-toggler {
+          display: block !important;
+        }
+        .collapse.navbar-collapse.d-none.d-lg-flex {
+          display: none !important;
+        }
+      }
+      @media (max-width: 700px) {
+        .dropdown-content {
+          /* display: block; <-- REMOVE THIS LINE! */
+          position: absolute;
+          right: 0;
+          left: unset;
+          top: 55px;
+          min-width: 120px;
+          width: 60vw;
+          border-radius: 0 0 10px 10px;
+          background: rgba(32,93,128,0.98);
+          box-shadow: 0 8px 24px rgba(32,93,128,0.25);
+        }
+      }
+      @media (min-width: 992px) {
+        .dropdown-content {
+          display: none !important;
+        }
+      }
+      footer {
+        background:rgba(32,93,128,0.9);
+        color:#fff;
+        text-align:center;
+        padding:20px 0 10px 0;
+        margin-top:auto;
+        width: 100%;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+      }
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .main-page {
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+        padding: 2rem 5vw 2rem 5vw;
+        min-height: 70vh;
+      }
+      .left-section {
+        flex: 1 1 300px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-direction: column;
+        min-width: 220px;
+      }
+      .right-section {
+        flex: 3 1 600px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
+      .right-section .child {
+        background: 0 4px 24px #205d8033 #d9d8da6a;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px #0001;
+        padding: 0;
+        width: 300px;
+        min-width: 220px;
+        max-width: 100%;
+        flex: 1 1 280px;
+        display: flex;
+        flex-direction: column;
+        transition: box-shadow 0.2s;
+        margin-bottom: 0;
+      }
+      .right-section .child a {
+        color: inherit;
+        text-decoration: none;
+        display: block;
+        height: 100%;
+      }
+      .right-section .child .top img {
+        width: 100%;
+        border-radius: 16px 16px 0 0;
+        object-fit: cover;
+        max-height: 160px;
+      }
+      .right-section .child .description {
+        padding: 1rem;
+        color: #222;
+      }
+      .right-section .child:hover {
+        box-shadow:  #d9d8da6a;
+        transform: translateY(-2px) scale(1.02);
+      }
+      @media (max-width: 991px) {
+        .main-page {
+          flex-direction: column;
+          gap: 1.5rem;
+          padding: 1.5rem 2vw 1.5rem 2vw;
+        }
+        .left-section {
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 1.5rem;
+        }
+        .right-section {
+          flex-direction: column;
+          flex-wrap: nowrap;
+          gap: 1.2rem;
+          align-items: center;
+          justify-content: center;
+        }
+        .right-section .child {
+          width: 98vw;
+          max-width: 420px;
+          min-width: 0;
+          margin: 0 auto;
+        }
+      }
+      @media (max-width: 600px) {
+        .main-page {
+          padding: 1rem 0.5rem 1rem 0.5rem;
+        }
+        .right-section .child {
+          width: 99vw;
+          max-width: 99vw;
+          min-width: 0;
+        }
+        .left-section h1 {
+          font-size: 1.2em;
+          text-align: center;
+        }
+      }
+      .left-section h1 {
+        text-align: left;
+        font-size: 2.2em;
+        margin-bottom: 0.5em;
+        margin-top: 0.5em;
+        letter-spacing: 1px;
+        font-family: 'Libre Baskerville', serif;
+        font-weight: 700;
+      }
+      @media (max-width: 991px) {
+        .left-section h1 {
+          text-align: center;
+          font-size: 1.5em;
+          margin-left: auto;
+          margin-right: auto;
+          width: 100%;
+          max-width: 98vw;
+          padding: 0 2vw;
+          /* "rager" effect: slightly justify text for mobile */
+          text-align: justify;
+          text-align-last: center;
+        }
+      }
+      @media (max-width: 600px) {
+        .left-section h1 {
+          font-size: 1.1em;
+          padding: 0 1vw;
+          text-align: justify;
+          text-align-last: center;
+        }
+      }
+    </style>
+</head>
+<body>
+  <!-- HEADER (Bootstrap Navbar, device friendly, dropdown only on mobile) -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+        <span class="logo-icon">📊</span>
+        <span class="brand-text">
+          EMEASO
+          <span class="brand-sub">analysis</span>
+        </span>
+      </a>
+      <button class="navbar-toggler d-lg-none" type="button" onclick="toggleDropdown()" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      </button>
+      <div class="collapse navbar-collapse d-none d-lg-flex" id="navbarScroll">
+        <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/calculation">Calculations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/chart">Charts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/show-data">Source Data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/contact">Contact</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search" onsubmit="event.preventDefault(); triggerSearch('navSearch');">
+          <input class="form-control me-2" id="navSearch" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-warning" type="submit">Search</button>
+        </form>
+      </div>
+      <!-- Dropdown for mobile only -->
+      <div class="dropdown-content" id="menuDropdown">
+        <a href="/">Home</a>
+        <a href="/calculation">Calculations</a>
+        <a href="/chart">Charts</a>
+        <a href="/show-data">Source Data</a>
+        <a href="/contact">Contact</a>
+        <form class="d-flex mt-2 px-2" onsubmit="event.preventDefault(); triggerSearch('mobileSearchInput');">
+          <input class="form-control me-2" id="mobileSearchInput" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-warning" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <div class="header" style="display:none"></div>
+  <div class="main-page">
+    <div class="left-section">
+      <h1 class="libre-baskerville-bold">STUDENT PERFORMANCE ANALYSIS</h1>
+    </div>
+    <div class="right-section">
+      <div class="child 1" data-aos="flip-right">
+        <a href="/chart?chart=study_hours">
+          <div class="top">
+            <img src="{{ url_for('static', filename='images/charts/study_hours.png') }}" alt="Study Hours Impact">
+          </div>
+          <div class="description">
+            <h3>STUDY HOURS VS EXAM SCORE</h3>
+            <p>Correlation analysis showing the relationship between study time and academic performance.</p>
+          </div>
+        </a>
+      </div>
+      <div class="child 2" data-aos="flip-right">
+        <a href="/chart?chart=screen_time">
+          <div class="top">
+            <img src="{{ url_for('static', filename='images/charts/screen_time.png') }}" alt="Screen Time Impact">
+          </div>
+          <div class="description">
+            <h3>SCREEN TIME VS EXAM SCORE</h3>
+            <p>Visual breakdown of student performance categories showing excellence levels.</p>
+          </div>
+        </a>
+      </div>
+      <div class="child 3" data-aos="flip-right">
+        <a href="/chart?chart=exercise">
+          <div class="top">
+            <img src="{{ url_for('static', filename='images/charts/exercise.png') }}" alt="Exercise Impact">
+          </div>
+          <div class="description">
+            <h3>DAILY EXERCISE VS EXAM SCORE</h3>
+            <p>Track academic improvement over time with detailed monthly performance metrics.</p>
+          </div>
+        </a>
+      </div>
+      <div class="child 4" data-aos="flip-right">
+        <a href="/chart?chart=attendance">
+          <div class="top">
+            <img src="{{ url_for('static', filename='images/charts/attendance.png') }}" alt="Attendance Impact">
+          </div>
+          <div class="description">
+            <h3>ATTENDANCE VS EXAM SCORE</h3>
+            <p>Comprehensive breakdown of performance across different academic subjects.</p>
+          </div>
+        </a>
+      </div>
+      <div class="child 5" data-aos="flip-right">
+        <a href="/chart?chart=sleep_quality">
+          <div class="top">
+            <img src="{{ url_for('static', filename='images/charts/sleep_quality.png') }}" alt="Sleep Quality Impact">
+          </div>
+          <div class="description">
+            <h3>SLEEP QUALITY VS EXAM SCORE</h3>
+            <p>Monitor progress towards academic targets and milestone achievements.</p>
+          </div>
+        </a>
+      </div>
+      <div class="child 6" data-aos="flip-right">
+        <a href="/chart?chart=mental_health">
+          <div class="top">
+            <img src="{{ url_for('static', filename='images/charts/mental_health.png') }}" alt="Mental Health Impact">
+          </div>
+          <div class="description">
+            <h3>MENTAL HEALTH VS EXAM SCORE</h3>
+            <p>Engagement metrics and participation rates across different activities.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="d-flex align-items-center justify-content-center gap-2">
+      <span class="logo-icon">📊</span>
+      <span>EMEASO PROSPER ANALYSIS &copy; {{ year or "2025" }}</span>
+    </div>
+  </footer>
+
+  <script src="../static/script.js"></script>
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script>
+    AOS.init();
+
+    // Mobile dropdown logic
+    function toggleDropdown() {
+      const dropdown = document.getElementById("menuDropdown");
+      if (window.innerWidth <= 991) {
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+      }
+    }
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById("menuDropdown");
+      const btn = document.querySelector('.navbar-toggler');
+      if (dropdown && dropdown.style.display === "block" && !dropdown.contains(event.target) && !btn.contains(event.target)) {
+        dropdown.style.display = "none";
+      }
+    });
+    // Hide dropdown on resize if desktop
+    window.addEventListener('resize', function() {
+      const dropdown = document.getElementById("menuDropdown");
+      if (window.innerWidth > 991 && dropdown) {
+        dropdown.style.display = "none";
+      }
+    });
+    function triggerSearch(inputId) {
+      let q = "";
+      if (inputId && document.getElementById(inputId)) {
+        q = document.getElementById(inputId).value.trim().toLowerCase();
+      } else if (document.getElementById('navSearch')) {
+        q = document.getElementById('navSearch').value.trim().toLowerCase();
+      }
+      const pageMap = {
+        "home": "/",
+        "calculations": "/calculation",
+        "calculation": "/calculation",
+        "charts": "/chart",
+        "chart": "/chart",
+        "contact": "/contact",
+        "show data": "/show-data",
+        "prediction": "/prediction"
+      };
+      if (pageMap[q]) {
+        window.location.href = pageMap[q];
+      } else {
+        alert("No matching page found.");
+      }
+    }
+  </script>
+</body>
+</html>

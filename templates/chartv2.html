@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Charts - EMEASO Analysis</title>
+  <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #205d80 15%, #000000 35%);
+      font-family: "Inter", sans-serif;
+      min-height: 100vh;
+      color: #fff;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .carousel-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      margin: 0 auto 40px auto;
+      padding: 10px 0;
+    }
+    .carousel {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      gap: 10px;
+      width: 80vw;
+      max-width: 700px;
+      background: rgba(32,93,128,0.13);
+      border-radius: 18px;
+      padding: 14px 18px;
+      box-shadow: 0 2px 12px rgba(32,93,128,0.07);
+    }
+    .carousel img {
+      height: 90px;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(32,93,128,0.10);
+      flex-shrink: 0;
+    }
+    .carousel img:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 16px rgba(32,93,128,0.18);
+    }
+    .arrow {
+      background-color: #444;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 20px;
+      cursor: pointer;
+      border-radius: 4px;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    .arrow:hover {
+      background-color: #666;
+    }
+    .chart-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+      text-align: center;
+    }
+    .main-image {
+      display: flex;
+      align-items: flex-start;
+      gap: 40px;
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+    .main-image img {
+      max-width: 480px;
+      min-width: 320px;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 24px rgba(32,93,128,0.10);
+      height: 340px;
+      object-fit: contain;
+      flex: 1 1 340px;
+    }
+    .info-sections-vertical {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      height: 340px;
+      min-width: 250px;
+      max-width: 340px;
+      flex: 0 0 320px;
+      justify-content: stretch;
+    }
+    .explanatory, .suggestions {
+      background: rgba(32,93,128,0.18);
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(32,93,128,0.10);
+      color: #fff;
+      padding: 18px 18px 12px 18px;
+      transition: background 0.4s, box-shadow 0.4s, opacity 0.4s;
+      opacity: 1;
+      overflow-y: auto;
+      height: 50%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .explanatory h3, .suggestions h3 {
+      margin-top: 0;
+      color: #ffd700;
+      letter-spacing: 1px;
+    }
+    .suggestions ul {
+      padding-left: 18px;
+      margin: 0;
+    }
+    .suggestions li {
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    @media (max-width: 900px) {
+      .main-image {
+        flex-direction: column;
+        align-items: center;
+      }
+      .info-sections-vertical {
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+      }
+    }
+    @media (max-width: 600px) {
+      .main-image img {
+        min-width: 90vw;
+        max-width: 98vw;
+        height: auto;
+      }
+      .info-sections-vertical {
+        min-width: 0;
+        max-width: 100vw;
+        width: 100vw;
+        height: auto;
+      }
+      .carousel {
+        width: 98vw;
+        max-width: 98vw;
+        padding: 8px 2px;
+      }
+    }
+    footer {
+      background:rgba(32,93,128,0.9);
+      color:#fff;
+      text-align:center;
+      padding:20px 0 10px 0;
+      margin-top:auto;
+    }
+    footer .logo-icon {
+      font-size:1.5em;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER (like prediction.html) -->
+  <nav class="navbar navbar-expand-lg" style="background: rgba(32,93,128,0.97); box-shadow: 0 2px 8px rgba(32,93,128,0.12);">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/" style="font-weight: bold; color: #ffd700;">
+        <span style="font-size:1.1em; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 2px 7px; color:white;">📊</span>
+        <span style="font-size:0.95em; line-height:1;">
+          EMEASO
+          <span style="font-size:0.6em; color:#fff; display:block; line-height:1; margin-top:-2px;">analysis</span>
+        </span>
+      </a>
+      <button class="navbar-toggler" type="button" onclick="toggleDropdown()" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarScroll">
+        <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+          <li class="nav-item">
+            <a class="nav-link active" style="color:#ffd700;" aria-current="page" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:#fff;" href="/calculation">Calculations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:#fff;" href="/chart">Charts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:#fff;" href="/show-data">Source Data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:#fff;" href="/contact">Contact</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search" onsubmit="event.preventDefault(); triggerSearch('navSearch');">
+          <input class="form-control me-2" id="navSearch" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-warning" type="submit">Search</button>
+        </form>
+      </div>
+      <!-- Dropdown for mobile -->
+    </div>
+  </nav>
+
+  <main class="container my-4">
+    <div class="chart-title">DATA VISUALIZATION</div>
+    <div class="main-image" id="mainImageContainer">
+      <img id="mainImage" src="../../static/images/charts/diet_quality.png" alt="Main Chart Display" />
+      <div class="info-sections-vertical">
+        <div class="explanatory" id="explanatoryBox">
+          <h3>Chart Insight</h3>
+          <p id="explanatoryText">A balanced diet is associated with improved concentration and energy levels. Students with better diet quality often report higher exam scores and better overall well-being.</p>
+        </div>
+        <div class="suggestions" id="suggestionsBox">
+          <h3>Suggestions</h3>
+          <ul id="suggestionsList">
+            <li>Include fruits, vegetables, and proteins in your meals.</li>
+            <li>Avoid excessive junk food and sugary drinks.</li>
+            <li>Stay hydrated throughout the day.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carousel Section -->
+    <div class="carousel-wrapper">
+      <button class="arrow left" id="carouselLeftBtn" type="button">‹</button>
+      <div class="carousel" id="carousel">
+        <img src="../../static/images/charts/study_hours.png" 
+             data-title="Study Hours vs Exam Score"
+             onclick="showImage('study_hours')" 
+             alt="Study Hours">
+        <img src="../../static/images/charts/screen_time.png" 
+             onclick="showImage('screen_time')" 
+             alt="Screen Time"
+             data-title="Screen Time vs Exam Score">
+        <img src="../../static/images/charts/sleep_quality.png" onclick="showImage('sleep_quality')" alt="Sleep Quality"
+             data-title="Sleep Quality vs Exam Score">
+        <img src="../../static/images/charts/attendance.png" onclick="showImage('attendance')" alt="Attendance"
+             data-title="Attendance vs Exam Score">
+        <img src="../../static/images/charts/exercise.png" onclick="showImage('exercise')" alt="Exercise"
+             data-title="Exercise vs Exam Score">
+        <img src="../../static/images/charts/mental_health.png" onclick="showImage('mental_health')" alt="Mental Health"
+              data-title="Mental Health vs Exam Score">
+        <img src="../../static/images/charts/diet_quality.png" onclick="showImage('diet_quality')" alt="Diet Quality"
+              data-title="Diet Quality vs Exam Score">
+      </div>
+      <button class="arrow right" id="carouselRightBtn" type="button">›</button>
+    </div>
+  </main>
+
+  <!-- FOOTER (like prediction.html) -->
+  <footer>
+    <div class="d-flex align-items-center justify-content-center gap-2">
+      <span class="logo-icon">📊</span>
+      <span>EMEASO PROSPER ANALYSIS &copy; {{ year or "2025" }}</span>
+    </div>
+  </footer>
+
+  <!-- Tooltip div -->
+  <div id="chartTooltip" style="display:none;position:fixed;pointer-events:none;background:rgba(32,93,128,0.97);color:#fff;padding:10px 18px;border-radius:10px;font-size:1em;font-weight:500;box-shadow:0 4px 16px rgba(32,93,128,0.18);z-index:100000;transition:opacity 0.2s;opacity:0;max-width:260px;white-space:pre-line;"></div>
+
+  <script>
+    // Chart data for insights and suggestions
+    const chartData = {
+      study_hours: {
+        src: "../../static/images/charts/study_hours.png",
+        explanation: "This chart shows that students who dedicate more hours to studying each day tend to achieve higher exam scores. Consistent study habits are strongly correlated with academic success.",
+        suggestions: [
+          "Set a daily study schedule and stick to it.",
+          "Break study sessions into focused intervals for better retention.",
+          "Review material regularly rather than cramming before exams."
+        ]
+      },
+      screen_time: {
+        src: "../../static/images/charts/screen_time.png",
+        explanation: "The chart reveals that excessive screen time, especially on social media and entertainment, is associated with lower exam scores. Managing screen time can help improve academic outcomes.",
+        suggestions: [
+          "Limit non-academic screen time to under 2 hours daily.",
+          "Use apps to track and control your screen usage.",
+          "Prioritize academic tasks before recreational screen activities."
+        ]
+      },
+      sleep_quality: {
+        src: "../../static/images/charts/sleep_quality.png",
+        explanation: "Good sleep quality is linked to improved memory and learning. Students who get enough restful sleep tend to perform better in exams.",
+        suggestions: [
+          "Aim for 7-9 hours of sleep each night.",
+          "Maintain a consistent sleep schedule.",
+          "Avoid screens before bedtime to improve sleep quality."
+        ]
+      },
+      attendance: {
+        src: "../../static/images/charts/attendance.png",
+        explanation: "High attendance rates are a strong predictor of academic achievement. Students who attend classes regularly are more likely to understand material and score higher on exams.",
+        suggestions: [
+          "Aim for at least 90% attendance in all classes.",
+          "If you miss a class, catch up on notes and assignments promptly.",
+          "Participate actively during lessons to reinforce learning."
+        ]
+      },
+      exercise: {
+        src: "../../static/images/charts/exercise.png",
+        explanation: "Regular exercise is linked to better concentration and higher exam scores. Students who exercise at least 3 times a week perform better academically.",
+        suggestions: [
+          "Incorporate short exercise routines into your weekly schedule.",
+          "Try group sports or activities to stay motivated.",
+          "Use exercise as a break to refresh your mind during study sessions."
+        ]
+      },
+      mental_health: {
+        src: "../../static/images/charts/mental_health.png",
+        explanation: "Good mental health supports better learning and exam performance. Students with higher mental health ratings tend to have more consistent academic results.",
+        suggestions: [
+          "Practice stress management techniques like mindfulness or journaling.",
+          "Seek support from counselors or peers if feeling overwhelmed.",
+          "Balance academic work with hobbies and relaxation."
+        ]
+      },
+      diet_quality: {
+        src: "../../static/images/charts/diet_quality.png",
+        explanation: "A balanced diet is associated with improved concentration and energy levels. Students with better diet quality often report higher exam scores and better overall well-being.",
+        suggestions: [
+          "Include fruits, vegetables, and proteins in your meals.",
+          "Avoid excessive junk food and sugary drinks.",
+          "Stay hydrated throughout the day."
+        ]
+      }
+    };
+
+    // Fade transition helper
+    function fadeUpdate(element, updateFn) {
+      element.style.opacity = 0.2;
+      setTimeout(() => {
+        updateFn();
+        element.style.opacity = 1;
+      }, 200);
+    }
+
+    function showImage(chartKey) {
+      const data = chartData[chartKey] || chartData["diet_quality"];
+      const mainImage = document.getElementById("mainImage");
+      mainImage.src = data.src;
+      fadeUpdate(document.getElementById("explanatoryBox"), () => {
+        document.getElementById("explanatoryText").textContent = data.explanation;
+      });
+      fadeUpdate(document.getElementById("suggestionsBox"), () => {
+        document.getElementById("suggestionsList").innerHTML = data.suggestions.map(s => `<li>${s}</li>`).join('');
+      });
+    }
+
+    // Carousel scroll logic (fixed for all browsers)
+    document.getElementById('carouselLeftBtn').onclick = function() {
+      document.getElementById('carousel').scrollBy({left: -300, behavior: 'smooth'});
+    };
+    document.getElementById('carouselRightBtn').onclick = function() {
+      document.getElementById('carousel').scrollBy({left: 300, behavior: 'smooth'});
+    };
+
+    // Dropdown and search (like prediction.html)
+    function toggleDropdown() {
+      const dropdown = document.getElementById("menuDropdown");
+      dropdown.style.display =
+        dropdown.style.display === "block" ? "none" : "block";
+    }
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById("menuDropdown");
+      const btn = document.querySelector('.navbar-toggler');
+      if (dropdown && dropdown.style.display === "block" && !dropdown.contains(event.target) && !btn.contains(event.target)) {
+        dropdown.style.display = "none";
+      }
+    });
+    function triggerSearch(inputId) {
+      let q = "";
+      if (inputId && document.getElementById(inputId)) {
+        q = document.getElementById(inputId).value.trim().toLowerCase();
+      } else if (document.getElementById('navSearch')) {
+        q = document.getElementById('navSearch').value.trim().toLowerCase();
+      }
+      const pageMap = {
+        "home": "/",
+        "calculations": "/calculation",
+        "calculation": "/calculation",
+        "charts": "/chart",
+        "chart": "/chart",
+        "contact": "/contact",
+        "show data": "/show-data",
+        "prediction": "/prediction"
+      };
+      if (pageMap[q]) {
+        window.location.href = pageMap[q];
+      } else {
+        alert("No matching page found.");
+      }
+    }
+
+    // Tooltip for chart carousel
+    const tooltip = document.getElementById('chartTooltip');
+    document.querySelectorAll('img[data-title]').forEach(img => {
+      img.addEventListener('mousemove', function(e) {
+        tooltip.textContent = img.getAttribute('data-title');
+        tooltip.style.display = 'block';
+        tooltip.style.opacity = '1';
+        let x = e.clientX + 18;
+        let y = e.clientY + 18;
+        if (x + tooltip.offsetWidth > window.innerWidth) {
+          x = window.innerWidth - tooltip.offsetWidth - 10;
+        }
+        if (y + tooltip.offsetHeight > window.innerHeight) {
+          y = window.innerHeight - tooltip.offsetHeight - 10;
+        }
+        tooltip.style.left = x + 'px';
+        tooltip.style.top = y + 'px';
+      });
+      img.addEventListener('mouseleave', function() {
+        tooltip.style.opacity = '0';
+        setTimeout(() => { tooltip.style.display = 'none'; }, 200);
+      });
+    });
+
+    window.onload = function () {
+      const params = new URLSearchParams(window.location.search);
+      const chartKey = params.get("chart") || "diet_quality";
+      showImage(chartKey);
+    };
+  </script>
+</body>
+</html>

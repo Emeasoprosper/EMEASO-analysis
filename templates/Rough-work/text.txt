@@ -1,0 +1,11 @@
+for screen time model we use '3' features, namely:
+1. social_media_hours
+2. netflix_hours
+3. internet_quality
+
+for study study_hours we use only '1' model: 
+1. study_hours_per_day
+
+for exercise frequency we use only '1' model:
+1. exercise_frequency
+

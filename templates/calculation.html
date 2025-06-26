@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Prediction Calculation</title>
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+      body {
+        background: linear-gradient(135deg, #205d80 15%, #000000 35%);
+        font-family: "Inter", sans-serif;
+        min-height: 100vh;
+        color: #fff;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .calc-options-row {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        justify-content: center;
+        gap: 1.5rem;
+      }
+      .calc-card {
+        width: 240px;
+        height: 170px;
+        background: #fff;
+        color: #205d80;
+        border-radius: 18px;
+        box-shadow: 0 2px 16px rgba(32, 93, 128, 0.1);
+        transition: transform 0.15s;
+        border: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .calc-card .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        padding: 1.2rem 0.5rem;
+      }
+      .calc-card .btn {
+        background: linear-gradient(135deg, #205d80 60%, #ffd700 100%);
+        color: #fff;
+        border: none;
+        font-weight: 600;
+        border-radius: 12px;
+        margin-top: 10px;
+        width: 100%;
+        transition: background 0.2s, color 0.2s;
+      }
+      .calc-card .btn:hover {
+        background: linear-gradient(135deg, #ffd700 0%, #205d80 100%);
+        color: #205d80;
+      }
+      .calc-card .card-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 0.7rem;
+      }
+      /* Bubble styles */
+      .bubble-side,
+      .bubble-top {
+        position: relative;
+        background: #fff;
+        color: #222;
+        padding: 22px 22px;
+        border-radius: 20px;
+        width: 300px;
+        max-width: 96vw;
+        font-family: "Inter", sans-serif;
+        box-shadow: 0 4px 24px rgba(32, 93, 128, 0.11);
+        margin: 0 auto;
+        transition: all 0.3s;
+        text-align: center;
+      }
+      .bubble-side::before,
+      .bubble-top::before {
+        content: "";
+        position: absolute;
+        display: block;
+      }
+      .bubble-side::before {
+        left: -18px;
+        top: 20px;
+        border-width: 18px 18px 2px 0;
+        border-style: solid;
+        border-color: transparent #fff transparent transparent;
+      }
+      .bubble-top::before {
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 0 20px 20px 20px;
+        border-style: solid;
+        border-color: transparent transparent #fff transparent;
+      }
+      @media (max-width: 700px) {
+        .bubble-side {
+          display: none !important;
+        }
+        .bubble-top {
+          display: block !important;
+        }
+      }
+      @media (min-width: 701px) {
+        .bubble-side {
+          display: block !important;
+        }
+        .bubble-top {
+          display: none !important;
+        }
+      }
+      footer {
+        background: rgba(32, 93, 128, 0.9);
+        color: #fff;
+        text-align: center;
+        padding: 20px 0 10px 0;
+        margin-top: auto;
+      }
+      footer .logo-icon {
+        font-size: 1.5em;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER (unchanged) -->
+    <nav
+      class="navbar navbar-expand-lg"
+      style="
+        background: rgba(32, 93, 128, 0.97);
+        box-shadow: 0 2px 8px rgba(32, 93, 128, 0.12);
+      "
+    >
+      <div class="container-fluid">
+        <a
+          class="navbar-brand d-flex align-items-center gap-2"
+          href="/"
+          style="font-weight: bold; color: #ffd700"
+        >
+          <span
+            style="
+              font-size: 1.1em;
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              border-radius: 10px;
+              padding: 2px 7px;
+              color: white;
+            "
+            >📊</span
+          >
+          <span style="font-size: 0.95em; line-height: 1">
+            EMEASO
+            <span
+              style="
+                font-size: 0.6em;
+                color: #fff;
+                display: block;
+                line-height: 1;
+                margin-top: -2px;
+              "
+              >analysis</span
+            >
+          </span>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          onclick="toggleDropdown()"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon" style="filter: invert(1)"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarScroll">
+          <ul
+            class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll"
+            style="--bs-scroll-height: 100px"
+          >
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                style="color: #ffd700"
+                aria-current="page"
+                href="/"
+                >Home</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" style="color: #fff" href="/calculation">Calculations</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" style="color: #fff" href="/chart">Charts</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" style="color: #fff" href="/show-data"
+                >Source Data</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" style="color: #fff" href="/contact"
+                >Contact</a
+              >
+            </li>
+          </ul>
+          <form
+            class="d-flex"
+            role="search"
+            onsubmit="event.preventDefault(); triggerSearch('navSearch');"
+          >
+            <input
+              class="form-control me-2"
+              id="navSearch"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+            />
+            <button class="btn btn-outline-warning" type="submit">
+              Search
+            </button>
+          </form>
+        </div>
+        <!-- Dropdown for mobile -->
+        <div class="dropdown-content" id="menuDropdown">
+          <a href="/">Home</a>
+          <a href="/calculation">Calculations</a>
+          <a href="/chart">Charts</a>
+          <a href="/show-data">Source Data</a>
+          <a href="/contact">Contact</a>
+          <form
+            class="d-flex mt-2 px-2"
+            onsubmit="event.preventDefault(); triggerSearch('mobileSearchInput');"
+          >
+            <input
+              class="form-control me-2"
+              id="mobileSearchInput"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+            />
+            <button class="btn btn-outline-warning" type="submit">
+              Search
+            </button>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <!-- QUESTIONNAIRE BUBBLE + IMAGE -->
+    <div class="container my-4">
+      <div
+        class="row justify-content-center align-items-center flex-wrap flex-md-nowrap"
+      >
+        <div
+          class="col-12 col-md-auto d-flex justify-content-center mb-3 mb-md-0"
+        >
+          <img
+            class="img-fluid rounded shadow"
+            src="../../static/images/POWER (1).png"
+            alt="questioneer"
+            style="width: 180px; max-width: 80vw"
+          />
+        </div>
+        <div class="col-12 col-md-auto d-flex justify-content-center">
+          <div id="bubblePrompt" class="bubble-side">
+            <h2
+              style="
+                margin: 0;
+                font-size: 1.1em;
+                font-weight: bold;
+                color: #222;
+              "
+            >
+              WHAT WILL YOU LIKE TO CALCULATE?
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALCULATION OPTIONS -->
+    <div class="container">
+      <div class="row calc-options-row">
+        <div class="col-auto">
+          <div class="card calc-card text-center">
+            <div class="card-body">
+              <h5 class="card-title mb-3">EXERCISE FREQUENCY</h5>
+              <button class="btn" data-calc="EXERCISE FREQUENCY">Select</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="card calc-card text-center">
+            <div class="card-body">
+              <h5 class="card-title mb-3">DIET QUALITY</h5>
+              <button class="btn" data-calc="DIET QUALITY">Select</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="card calc-card text-center">
+            <div class="card-body">
+              <h5 class="card-title mb-3">STUDY HOURS</h5>
+              <button class="btn" data-calc="STUDY HOURS">Select</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="card calc-card text-center">
+            <div class="card-body">
+              <h5 class="card-title mb-3">SCREEN TIME</h5>
+              <button class="btn" data-calc="SCREEN TIME">Select</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto">
+          <div class="card calc-card text-center">
+            <div class="card-body">
+              <h5 class="card-title mb-3">MENTAL HEALTH</h5>
+              <button class="btn" data-calc="MENTAL HEALTH">Select</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="d-flex align-items-center justify-content-center gap-2">
+        <span class="logo-icon">📊</span>
+        <span>EMEASO PROSPER ANALYSIS &copy; {{ year or "2025" }}</span>
+      </div>
+    </footer>
+
+    <!-- Responsive Bubble Switcher JS -->
+    <script>
+      function updateBubbleType() {
+        const bubbleSide = document.getElementById("bubblePrompt");
+        if (window.innerWidth <= 700) {
+          if (!bubbleSide.classList.contains("bubble-top")) {
+            bubbleSide.classList.remove("bubble-side");
+            bubbleSide.classList.add("bubble-top");
+          }
+        } else {
+          if (!bubbleSide.classList.contains("bubble-side")) {
+            bubbleSide.classList.remove("bubble-top");
+            bubbleSide.classList.add("bubble-side");
+          }
+        }
+      }
+      window.addEventListener("resize", updateBubbleType);
+      window.addEventListener("DOMContentLoaded", updateBubbleType);
+
+      // Dropdown toggle function
+      function toggleDropdown() {
+        const dropdown = document.getElementById("menuDropdown");
+        dropdown.style.display =
+          dropdown.style.display === "block" ? "none" : "block";
+      }
+      document.addEventListener("click", function (event) {
+        const dropdown = document.getElementById("menuDropdown");
+        const btn = document.querySelector(".navbar-toggler");
+        if (
+          dropdown &&
+          dropdown.style.display === "block" &&
+          !dropdown.contains(event.target) &&
+          !btn.contains(event.target)
+        ) {
+          dropdown.style.display = "none";
+        }
+      });
+
+      // Search function for header and mobile
+      function triggerSearch(inputId) {
+        let q = "";
+        if (inputId && document.getElementById(inputId)) {
+          q = document.getElementById(inputId).value.trim().toLowerCase();
+        } else if (document.getElementById("navSearch")) {
+          q = document.getElementById("navSearch").value.trim().toLowerCase();
+        }
+        const pageMap = {
+          home: "/",
+          calculations: "/calculation",
+          calculation: "/calculation",
+          charts: "/chart",
+          chart: "/chart",
+          contact: "/contact",
+          "show data": "/show-data",
+          prediction: "/prediction",
+        };
+        if (pageMap[q]) {
+          window.location.href = pageMap[q];
+        } else {
+          alert("No matching page found.");
+        }
+      }
+      // Calculation option click logic
+      document
+        .querySelector(".calc-options-row")
+        .addEventListener("click", function (e) {
+          const btn = e.target.closest("button[data-calc]");
+          if (btn) {
+            const selectedValue = btn.getAttribute("data-calc");
+            localStorage.setItem("selectedCalculation", selectedValue);
+            localStorage.setItem(
+              "inputPlaceholder",
+              placeholderMap[selectedValue] || "Enter value"
+            );
+            localStorage.setItem(
+              "questionPrompt",
+              questionPromptMap[selectedValue] || "Enter your value below:"
+            );
+            window.location.href = "/prediction";
+          }
+        });
+      // Map calculation names to placeholders and prompts
+      const placeholderMap = {
+        "EXERCISE FREQUENCY": "Enter exercise days per week (1-7)",
+        "DIET QUALITY": "Enter diet quality (1=Poor, 2=Average, 3=Good)",
+        "STUDY HOURS": "Enter study hours per day",
+        "SCREEN TIME": "Enter screen time per day (hours)",
+        "MENTAL HEALTH": "Enter mental health rating (1-10)",
+      };
+      const questionPromptMap = {
+        "EXERCISE FREQUENCY": "How many days per week do you exercise? (1-7)",
+        "DIET QUALITY":
+          "What is your diet quality? (1=Poor, 2=Average, 3=Good)",
+        "STUDY HOURS": "How many hours do you study per day?",
+        "SCREEN TIME": "How many hours of screen time do you have per day?",
+        "MENTAL HEALTH": "How would you rate your mental health? (1-10)",
+      };
+    </script>
+  </body>
+</html>

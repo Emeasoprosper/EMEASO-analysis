@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Top-Tail Quote Bubble</title>
+  <style>
+    .bubble-top {
+      position: relative;
+      background: white;
+      color: black;
+      padding: 20px;
+      border-radius: 20px;
+      width: 300px;
+      margin: 100px auto;
+      font-family: sans-serif;
+    }
+
+    .bubble-top::before {
+      content: "";
+      position: absolute;
+      top: -20px;
+      left: 40%;
+      border-width: 0 20px 20px 20px;
+      border-style: solid;
+      border-color: transparent transparent white transparent;
+    }
+
+     .bubble-side {
+      position: relative;
+      background: white;
+      color: black;
+      padding: 20px;
+      border-radius: 20px;
+      width: 300px;
+      margin: 100px auto;
+      font-family: sans-serif;
+    }
+
+    .bubble-side::before {
+      content: "";
+      color: #000000;
+      position: absolute;
+      left: -13px;
+      top: 9%;
+      border-width: 20px 20px 2px 0;
+      border-style: solid;
+      border-color: transparent white transparent transparent;
+    }
+
+    body {
+      background: #000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="bubble-top">
+    You are stronger than your struggle.
+  </div>
+  <br>
+  <br>
+  <div class="bubble-side">
+    Keep your light shining, even in the storm.
+  </div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Image Carousel</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f9f9f9;
+      overflow-x: hidden;
+    }
+
+    .gallery-container {
+      width: 100%;
+      max-width: 1000px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .main-image {
+      width: 100%;
+      height: 400px;
+      background: #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .main-image img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    .carousel-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .carousel {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .carousel img {
+      height: 100px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      border-radius: 6px;
+    }
+
+    .carousel img:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+
+    .arrow {
+      background-color: #444;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 20px;
+      cursor: pointer;
+      border-radius: 4px;
+      user-select: none;
+    }
+
+    .arrow:hover {
+      background-color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="gallery-container">
+    <!-- Large Image -->
+    <div class="main-image" id="mainImageContainer">
+      <img id="mainImage" src="../../static/images/charts/attendance.png" alt="Main Display">
+    </div>
+
+    <!-- Carousel -->
+    <div class="carousel-wrapper">
+      <button class="arrow left" onclick="scrollCarousel(-1)">←</button>
+
+      <div class="carousel" id="carousel">
+        <img src="../../static/images/charts/attendance.png" onclick="showImage(this.src.replace('150x100', '800x400'))" alt="text"/>
+        <img src="../../static/images/charts/correlations.png" onclick="showImage(this.src.replace('150x100', '800x400'))"/>
+        <img src="../../static/images/charts/diet_quality.png" onclick="showImage(this.src.replace('150x100', '800x400'))"/>
+        <img src="../../static/images/charts/exercise.png" onclick="showImage(this.src.replace('150x100', '800x400'))"/>
+        <img src="../../static/images/charts/mental_health.png" onclick="showImage(this.src.replace('150x100', '800x400'))">
+        <img src="../../static/images/charts/screen_time.png" onclick="showImage(this.src.replace('150x100', '800x400'))">
+        <img src="../../static/images/charts/study_hours.png" onclick="showImage(this.src.replace('150x100', '800x400'))">
+      </div>
+
+      <button class="arrow right" onclick="scrollCarousel(1)">→</button>
+    </div>
+  </div>
+
+  <script>
+    function showImage(src) {
+      document.getElementById("mainImage").src = src;
+    }
+
+    function scrollCarousel(direction) {
+      const carousel = document.getElementById("carousel");
+      const scrollAmount = 300;
+      carousel.scrollBy({
+        left: direction * scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  </script>
+
+</body>
+</html>

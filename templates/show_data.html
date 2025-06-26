@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Habits Performance Data</title>
+  <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #205d80 15%, #000000 35%);
+      font-family: "Inter", Arial, sans-serif;
+      min-height: 100vh;
+      color: #fff;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    h1 {
+      text-align: center;
+      color: #fff;
+      margin-top: 30px;
+      font-size: 2.2em;
+      letter-spacing: 1px;
+    }
+    .back-btn {
+      display: block;
+      margin: 20px auto 30px auto;
+      padding: 10px 24px;
+      background: #205d80;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 1em;
+      transition: background 0.2s;
+      text-decoration: none;
+      width: fit-content;
+    }
+    .back-btn:hover { background: #17405c; }
+    .table-container {
+      max-width: 98vw;
+      overflow-x: auto;
+      margin: 0 auto 40px auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 16px #205d8033;
+      padding: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: #205d80 #e0e0e0;
+    }
+    /* Custom scrollbar for Chrome, Edge, Safari */
+    .table-container::-webkit-scrollbar {
+      height: 10px;
+      background: #e0e0e0;
+      border-radius: 5px;
+    }
+    .table-container::-webkit-scrollbar-thumb {
+      background: #205d80;
+      border-radius: 5px;
+    }
+    .table-container::-webkit-scrollbar-track {
+      background: #e0e0e0;
+      border-radius: 5px;
+    }
+    .data {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 900px;
+      color: #222;
+    }
+    .data th, .data td {
+      border: 1px solid #ccc;
+      padding: 6px 10px;
+      text-align: left;
+      color: #222;
+      background: none;
+    }
+    .data th {
+      background: #205d80;
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .data tr:nth-child(even) { background: #f2f2f2; }
+    .download-btn {
+      background: #205d80;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 18px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .download-btn:hover {
+      background: #17405c;
+    }
+    /* Responsive tweaks */
+    @media (max-width: 900px) {
+      h1 { font-size: 1.5em; }
+      .table-container { min-width: 0; }
+    }
+    @media (max-width: 600px) {
+      h1 { font-size: 1.1em; }
+      .download-btn { font-size: 0.95em; padding: 8px 10px; }
+      .table-container { padding: 4px; }
+      .data { min-width: 600px; }
+    }
+    /* Footer styles */
+    footer {
+      background:rgba(32,93,128,0.9);
+      color:#fff;
+      text-align:center;
+      padding:20px 0 10px 0;
+      margin-top:auto;
+    }
+    footer .logo-icon {
+      font-size:1.5em;
+    }
+    /* Navbar dropdown for mobile */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 20px;
+      top: 60px;
+      background-color: rgba(32,93,128,0.97);
+      min-width: 150px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1000;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .dropdown-content a {
+      color: #ffd700;
+      padding: 10px 15px;
+      text-decoration: none;
+      display: block;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+    .dropdown-content a:hover {
+      background: #205d80;
+      color: #fff;
+    }
+    @media (max-width: 991px) {
+      .dropdown-content {
+        display: none;
+      }
+      .navbar-toggler {
+        display: block !important;
+      }
+    }
+    @media (max-width: 700px) {
+      .dropdown-content {
+        position: absolute;
+        right: 0;
+        left: unset;
+        top: 55px;
+        min-width: 120px;
+        width: 60vw;
+        border-radius: 0 0 10px 10px;
+        background: rgba(32,93,128,0.98);
+        box-shadow: 0 8px 24px rgba(32,93,128,0.25);
+      }
+    }
+    @media (min-width: 992px) {
+      .dropdown-content {
+        display: none !important;
+      }
+    }
+    .scroll-arrow-btn {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10000;
+      background: #205d80cc;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      font-size: 2em;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0005;
+      transition: opacity 0.2s, background 0.2s;
+      opacity: 0.85;
+    }
+    .scroll-arrow-btn.left {
+      left: 10px;
+    }
+    .scroll-arrow-btn.right {
+      right: 10px;
+    }
+    @media (max-width: 700px) {
+      .scroll-arrow-btn { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER (Bootstrap Navbar, device friendly, dropdown only on mobile) -->
+  <nav class="navbar navbar-expand-lg" style="background: rgba(32,93,128,0.97); box-shadow: 0 2px 8px rgba(32,93,128,0.12);">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/" style="font-weight: bold; color: #ffd700;">
+        <span style="font-size:1.1em; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 2px 7px; color:white;">📊</span>
+        <span style="font-size:0.95em; line-height:1;">
+          EMEASO
+          <span style="font-size:0.6em; color:#fff; display:block; line-height:1; margin-top:-2px;">analysis</span>
+        </span>
+      </a>
+      <button class="navbar-toggler" type="button" onclick="toggleDropdown()" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarScroll">
+        <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+          <li class="nav-item">
+            <a class="nav-link active" style="color:#ffd700;" aria-current="page" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:#fff;" href="/calculation">Calculations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:#fff;" href="/chart">Charts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:#fff;" href="/show-data">Source Data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="color:#fff;" href="/contact">Contact</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search" onsubmit="event.preventDefault(); triggerSearch('navSearch');">
+          <input class="form-control me-2" id="navSearch" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-warning" type="submit">Search</button>
+        </form>
+      </div>
+      <!-- Dropdown for mobile -->
+      <div class="dropdown-content" id="menuDropdown">
+        <a href="/">Home</a>
+        <a href="/calculation">Calculations</a>
+        <a href="/chart">Charts</a>
+        <a href="/show-data">Source Data</a>
+        <a href="/contact">Contact</a>
+        <form class="d-flex mt-2 px-2" onsubmit="event.preventDefault(); triggerSearch('mobileSearchInput');">
+          <input class="form-control me-2" id="mobileSearchInput" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-warning" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <h1>Student Habits Performance Data</h1>
+  <a href="/" class="back-btn">Back to Home</a>
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;">
+    <button class="download-btn" onclick="downloadTable('excel')">Download Excel</button>
+    <button class="download-btn" onclick="downloadTable('pdf')">Download PDF</button>
+  </div>
+  <!-- Scroll buttons always visible on desktop, hidden on mobile -->
+  <div class="scroll-btns" id="scrollBtns" style="position:sticky;top:0;z-index:10;justify-content:center;gap:10px;margin-bottom:10px;background:transparent;">
+    <button class="download-btn" type="button" onclick="scrollTable(-1)" aria-label="Scroll left">&larr;</button>
+    <button class="download-btn" type="button" onclick="scrollTable(1)" aria-label="Scroll right">&rarr;</button>
+  </div>
+  <button class="scroll-arrow-btn left" id="scrollLeftBtn" aria-label="Scroll left" style="left:10px;top:50%;position:fixed;">&larr;</button>
+  <button class="scroll-arrow-btn right" id="scrollRightBtn" aria-label="Scroll right" style="right:10px;top:50%;position:fixed;">&rarr;</button>
+  <div class="table-container" id="tableScroll">
+      {{ table|safe }}
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="d-flex align-items-center justify-content-center gap-2">
+      <span class="logo-icon">📊</span>
+      <span>EMEASO PROSPER ANALYSIS &copy; {{ year or "2025" }}</span>
+    </div>
+  </footer>
+
+  <!-- Functional JS for search, dropdown, scroll, and download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script>
+    function toggleDropdown() {
+      const dropdown = document.getElementById("menuDropdown");
+      dropdown.style.display =
+        dropdown.style.display === "block" ? "none" : "block";
+    }
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById("menuDropdown");
+      const btn = document.querySelector('.navbar-toggler');
+      if (dropdown && dropdown.style.display === "block" && !dropdown.contains(event.target) && !btn.contains(event.target)) {
+        dropdown.style.display = "none";
+      }
+    });
+    window.addEventListener('resize', function() {
+      const dropdown = document.getElementById("menuDropdown");
+      if (window.innerWidth > 991 && dropdown) {
+        dropdown.style.display = "none";
+      }
+    });
+    function triggerSearch(inputId) {
+      let q = "";
+      if (inputId && document.getElementById(inputId)) {
+        q = document.getElementById(inputId).value.trim().toLowerCase();
+      } else if (document.getElementById('navSearch')) {
+        q = document.getElementById('navSearch').value.trim().toLowerCase();
+      }
+      const pageMap = {
+        "home": "/",
+        "calculations": "/calculation",
+        "calculation": "/calculation",
+        "charts": "/chart",
+        "chart": "/chart",
+        "contact": "/contact",
+        "show data": "/show-data",
+        "prediction": "/prediction"
+      };
+      if (pageMap[q]) {
+        window.location.href = pageMap[q];
+      } else {
+        alert("No matching page found.");
+      }
+    }
+    function downloadTable(type) {
+      const table = document.querySelector('.table-container table');
+      if (!table) return alert('No table found!');
+      if (type === 'excel') {
+        let wb = XLSX.utils.table_to_book(table, {sheet:"Sheet1"});
+        XLSX.writeFile(wb, "student_data.xlsx");
+      } else if (type === 'pdf') {
+        const { jsPDF } = window.jspdf;
+        let doc = new jsPDF('l', 'pt', 'a4');
+        doc.text("Student Habits Performance Data", 40, 40);
+        doc.autoTable({ html: table, startY: 60, theme: 'grid', styles: { fontSize: 7 } });
+        doc.save("student_data.pdf");
+      }
+    }
+    // Always show scroll buttons on desktop, hide on mobile
+    function updateScrollBtns() {
+      const scrollBtns = document.getElementById('scrollBtns');
+      if (window.innerWidth > 700) {
+        scrollBtns.style.display = 'flex';
+      } else {
+        scrollBtns.style.display = 'none';
+      }
+    }
+    function scrollTable(dir) {
+      const container = document.getElementById('tableScroll');
+      const amount = Math.max(container.offsetWidth * 0.7, 200);
+      container.scrollBy({ left: dir * amount, behavior: 'smooth' });
+    }
+    window.addEventListener('resize', updateScrollBtns);
+    window.addEventListener('DOMContentLoaded', updateScrollBtns);
+
+    // Touch swipe for mobile (should work by default, but this helps older browsers)
+    let startX = null;
+    let tableScroll = null;
+    window.addEventListener('DOMContentLoaded', function() {
+      tableScroll = document.getElementById('tableScroll');
+      if (!tableScroll) return;
+      tableScroll.addEventListener('touchstart', function(e) {
+        if (e.touches.length === 1) startX = e.touches[0].clientX;
+      });
+      tableScroll.addEventListener('touchmove', function(e) {
+        if (startX !== null && e.touches.length === 1) {
+          const dx = startX - e.touches[0].clientX;
+          tableScroll.scrollLeft += dx;
+          startX = e.touches[0].clientX;
+        }
+      });
+      tableScroll.addEventListener('touchend', function() { startX = null; });
+    });
+
+    // Show/hide scroll arrows on mouse move near left/right, always hide on mobile
+    let hideTimeout;
+    function showScrollBtn(side) {
+      if (window.innerWidth <= 700) return;
+      document.getElementById('scrollLeftBtn').style.display = side === 'left' ? 'flex' : 'none';
+      document.getElementById('scrollRightBtn').style.display = side === 'right' ? 'flex' : 'none';
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => {
+        document.getElementById('scrollLeftBtn').style.display = 'none';
+        document.getElementById('scrollRightBtn').style.display = 'none';
+      }, 1200);
+    }
+    document.addEventListener('mousemove', function(e) {
+      if (window.innerWidth <= 700) return;
+      const edge = 60; // px from edge to trigger
+      if (e.clientX < edge) {
+        showScrollBtn('left');
+      } else if (e.clientX > window.innerWidth - edge) {
+        showScrollBtn('right');
+      }
+    });
+    // Hide on scroll after a short delay
+    window.addEventListener('scroll', function() {
+      document.getElementById('scrollLeftBtn').style.display = 'none';
+      document.getElementById('scrollRightBtn').style.display = 'none';
+    });
+
+    // Scroll table left/right
+    function scrollTable(dir) {
+      const container = document.getElementById('tableScroll');
+      const amount = Math.max(container.offsetWidth * 0.7, 200);
+      container.scrollBy({ left: dir * amount, behavior: 'smooth' });
+    }
+    document.getElementById('scrollLeftBtn').onclick = function() { scrollTable(-1); };
+    document.getElementById('scrollRightBtn').onclick = function() { scrollTable(1); };
+
+    // Touch swipe for mobile (should work by default, but this helps older browsers)
+    let startX = null;
+    window.addEventListener('DOMContentLoaded', function() {
+      const tableScroll = document.getElementById('tableScroll');
+      if (!tableScroll) return;
+      tableScroll.addEventListener('touchstart', function(e) {
+        if (e.touches.length === 1) startX = e.touches[0].clientX;
+      });
+      tableScroll.addEventListener('touchmove', function(e) {
+        if (startX !== null && e.touches.length === 1) {
+          const dx = startX - e.touches[0].clientX;
+          tableScroll.scrollLeft += dx;
+          startX = e.touches[0].clientX;
+        }
+      });
+      tableScroll.addEventListener('touchend', function() { startX = null; });
+    });
+  </script>
+</body>
+</html>

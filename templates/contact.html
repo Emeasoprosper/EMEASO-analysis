@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - EMEASO Analysis</title>
+  <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #205d80 15%, #000000 35%);
+      font-family: "Inter", sans-serif;
+      min-height: 100vh;
+      color: #fff;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .navbar {
+      background: rgba(32,93,128,0.97);
+      box-shadow: 0 2px 8px rgba(32,93,128,0.12);
+    }
+    .navbar-brand {
+      font-weight: bold;
+      color: #ffd700 !important;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    .navbar-brand span {
+      font-size: 1.1em;
+      line-height: 1;
+    }
+    .navbar-brand small {
+      font-size: 0.7em;
+      color: #fff;
+      display: block;
+      line-height: 1;
+      margin-top: -2px;
+    }
+    .logo-icon {
+      font-size: 1.1em;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+      padding: 2px 7px;
+      color: white;
+      margin-right: 4px;
+    }
+    .nav-link { color: #fff !important; }
+    .nav-link.active { color: #ffd700 !important; }
+    .btn-outline-warning {
+      color: #ffd700;
+      border-color: #ffd700;
+      border-radius: 25px;
+      transition: all 0.3s;
+    }
+    .btn-outline-warning:hover {
+      background: #ffd700;
+      color: #000;
+    }
+    .form-control {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 25px;
+      padding: 12px 20px;
+      color: white;
+      width: 220px;
+      backdrop-filter: blur(10px);
+      font-size: 1em;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 20px;
+      top: 60px;
+      background-color: rgba(255, 255, 255, 0.285);
+      min-width: 150px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1000;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .dropdown-content a {
+      color: white;
+      padding: 10px 15px;
+      text-decoration: none;
+      display: block;
+      transition: background-color 0.3s ease;
+    }
+    .dropdown-content a:hover {
+      background: #205d80;
+    }
+    .contact-container {
+      background: rgba(255,255,255,0.10);
+      border-radius: 22px;
+      box-shadow: 0 8px 25px rgba(32,93,128,0.18);
+      max-width: 500px;
+      width: 95vw;
+      margin: 70px auto 40px auto;
+      padding: 2.5rem 2rem 2rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      animation: fadeInUp 1s;
+      box-sizing: border-box;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .contact-container h2 {
+      color: #ffd700;
+      margin-bottom: 18px;
+      font-size: 2rem;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .contact-container form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      box-sizing: border-box;
+    }
+    .contact-container input,
+    .contact-container textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: none;
+      background: rgba(255,255,255,0.13);
+      color: #fff;
+      font-size: 1em;
+      resize: none;
+      margin-bottom: 8px;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .contact-container input:focus,
+    .contact-container textarea:focus {
+      background: rgba(102,126,234,0.13);
+      outline: none;
+      box-shadow: 0 0 0 2px #667eea55;
+    }
+    .contact-container textarea {
+      min-height: 90px;
+      max-height: 200px;
+    }
+    .contact-container button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 0;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      box-shadow: 0 2px 8px rgba(32,93,128,0.10);
+    }
+    .contact-container button:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+      transform: translateY(-2px) scale(1.03);
+    }
+    .contact-success {
+      color: #00ff99;
+      margin-top: 10px;
+      font-weight: 600;
+      text-align: center;
+      animation: fadeIn 0.7s;
+    }
+    .contact-error {
+      color: #ff4d4d;
+      margin-top: 10px;
+      font-weight: 600;
+      text-align: center;
+      animation: fadeIn 0.7s;
+    }
+    footer {
+      background:rgba(32,93,128,0.9);
+      color:#fff;
+      text-align:center;
+      padding:20px 0 10px 0;
+      margin-top:auto;
+    }
+    footer .logo-icon {
+      font-size:1.5em;
+    }
+    @media (max-width: 600px) {
+      .contact-container {
+        padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+      }
+      .form-control {
+        width: 90vw;
+        min-width: 0;
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+        <span class="logo-icon">📊</span>
+        <span>EMEASO<br><small>analysis</small></span>
+      </a>
+      <button class="navbar-toggler" type="button" onclick="toggleDropdown()" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarScroll">
+        <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/calculation">Calculations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/chart">Charts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/show-data">Source Data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/contact">Contact</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search" onsubmit="event.preventDefault(); triggerSearch();">
+          <input class="form-control me-2" id="navSearch" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-warning" type="submit">Search</button>
+        </form>
+      </div>
+      <div class="dropdown-content" id="menuDropdown">
+        <a href="/">Home</a>
+        <a href="/calculation.html">Calculations</a>
+        <a href="/chart">Charts</a>
+        <a href="/show-data">Source Data</a>
+        <a href="/contact">Contact</a>
+        <form class="d-flex mt-2 px-2" onsubmit="event.preventDefault(); triggerSearch();">
+          <input class="form-control me-2" id="mobileSearchInput" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-warning" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTACT FORM -->
+  <div class="contact-container">
+    <h2>Contact Us</h2>
+    <form id="contactForm" autocomplete="off">
+      <input type="text" name="name" placeholder="Your Name" required />
+      <input type="email" name="email" placeholder="Your Email" required />
+      <textarea name="message" placeholder="Your Message" required></textarea>
+      <button type="submit">Send Message</button>
+      <div id="formStatus"></div>
+    </form>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="d-flex align-items-center justify-content-center gap-2">
+      <span class="logo-icon">📊</span>
+      <span>EMEASO PROSPER ANALYSIS &copy; 2025</span>
+    </div>
+  </footer>
+
+  <script>
+    function toggleDropdown() {
+      const dropdown = document.getElementById("menuDropdown");
+      dropdown.style.display =
+        dropdown.style.display === "block" ? "none" : "block";
+    }
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById("menuDropdown");
+      const btn = document.querySelector('.navbar-toggler');
+      if (dropdown && dropdown.style.display === "block" && !dropdown.contains(event.target) && !btn.contains(event.target)) {
+        dropdown.style.display = "none";
+      }
+    });
+    const pageMap = {
+      "home": "/",
+      "calculations": "/calculation.html",
+      "charts": "/chart",
+      "contact": "/contact",
+      "show data": "/show-data",
+      "prediction": "/prediction"
+    };
+    function triggerSearch() {
+      let q = "";
+      if (document.getElementById('navSearch')) {
+        q = document.getElementById('navSearch').value.trim().toLowerCase();
+      } else if (document.getElementById('mobileSearchInput')) {
+        q = document.getElementById('mobileSearchInput').value.trim().toLowerCase();
+      }
+      if (pageMap[q]) {
+        window.location.href = pageMap[q];
+      } else {
+        alert("No matching page found.");
+      }
+    }
+    // Contact form handler (demo only)
+    document.getElementById('contactForm').onsubmit = function(e) {
+      e.preventDefault();
+      const status = document.getElementById('formStatus');
+      status.innerHTML = "<span style='font-size:1.5em;'>✅</span> Thank you for contacting us!<br>We'll get back to you soon.";
+      status.className = "contact-success";
+      this.reset();
+      setTimeout(() => { status.textContent = ""; }, 5000);
+    };
+  </script>
+</body>
+</html>

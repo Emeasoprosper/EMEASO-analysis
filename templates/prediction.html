@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data prediction page</title>
+
+    <!-- Bootstrap CSS -->
+<link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap JS (place before </body>) -->
+<script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+      body {
+        background: linear-gradient(135deg, #205d80 15%, #000000 35%);
+        font-family: "Inter", sans-serif;
+        min-height: 100vh;
+        color: #fff;
+        margin: 0;
+      }
+
+      .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+.logo {
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  color: #fff;
+  margin-left: 7%;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 25px;
+  overflow: hidden;
+  padding: 3px 5px;
+}
+
+.logo span {
+  font-size: 1.1em;
+  transition: font-size 0.2s;
+}
+
+.logo small {
+  font-size: 0.7em;
+  transition: font-size 0.2s;
+}
+
+.logo-icon {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  font-size: 1.5em;
+  padding: 2px 8px;
+}
+
+      .nav-buttons {
+        display: flex;
+        gap: 20px;
+      }
+
+      .search-container {
+        position: relative;
+        transition: box-shadow 0.3s, background 0.3s;
+      }
+
+      .search-container:focus-within,
+      .search-container:hover {
+        box-shadow: 0 0 0 4px #667eea55;
+        background: rgba(102, 126, 234, 0.08);
+      }
+
+      .search-box {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 25px;
+        padding: 12px 20px 12px 45px;
+        color: white;
+        width: 300px;
+        backdrop-filter: blur(10px);
+      }
+
+      .search-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .search-suggestions {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: #110f1b;
+        color: #ffffff;
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 8px 24px rgba(32,93,128,0.15);
+        z-index: 100;
+        font-size: 1em;
+      }
+
+      .search-suggestion {
+        padding: 10px 18px; cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .search-suggestion:hover {
+        background: #205d80; color: #fff;
+      }
+
+      .nav-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+      }
+
+      .nav-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .menu-btn {
+        background-color: #555;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        margin-left: 5px;
+        cursor: pointer;
+        border-radius: 50px;
+        font-size: 18px;
+        transition: font-size 0.2s, padding 0.2s;
+      }
+
+      .menu-btn:hover {
+        background-color: #777;
+      }
+
+      /* Dropdown container (hidden by default) */
+      .dropdown-content {
+        display: none; /* Hidden by default */
+        position: absolute;
+        right: 20px; /* adjust to match your header/nav position */
+        top: 60px;   /* adjust depending on your header height */
+        background-color: rgba(255, 255, 255, 0.285);
+        min-width: 150px;
+        box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+        z-index: 1000;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      /* Dropdown links inside the menu */
+      .dropdown-content a {
+        color: white;
+        padding: 10px 15px;
+        text-decoration: none;
+        display: block;
+        transition: background-color 0.3s ease;
+      }
+
+      .dropdown-content a:hover {
+        background: #205d80;
+      }
+
+      img, .main-image img, .questionnaire img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+      .answer{
+        position: left;
+        background-color: #fff;
+        color: #000;
+        font-size: 10px;
+        border-radius: 20px;
+        padding: 20px 30px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      h1, h2 {
+        text-align: center;
+        color: #fff;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-top: 20px;
+      }
+
+      h2 {
+        font-size: 1rem;
+        margin-top: 10px;
+      }
+
+      .studyHoursInput {
+        width: 300px;
+        height: 20%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        margin-top: 20px;
+        color: rgb(0, 0, 0);
+        outline: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+        .predictButton {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #3eb942;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            top: 50%;
+
+        }
+
+        .predictButton:hover {
+            background-color: #6dff74;
+            color: #9f9f9f
+            transition: ;
+        }
+
+      .answer{
+         position: relative; /* Changed from absolute */
+        background-color: #fff;
+        color: #000;
+        font-size: 10px;
+        border-radius: 20px;
+        width: 45vw;
+        padding: 20px 30px;
+
+      }
+
+      .prediction-container {
+        text-align: center;
+        margin-top: 50px;
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        width: 100vw;
+      }
+
+      .left .right{
+        width: 50vw;
+        height: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .img-icon{
+        float: left !important;
+        width: 300px;
+        height: 300px;
+        position: absolute;
+        top: 86vh;
+        transform: translateY(-50%);
+        left: 40px;
+        z-index: 10;
+
+      }
+
+      .input-container{
+        text-align: center
+      }
+
+      .test {
+        position: relative; /* Changed from absolute */
+        background-color: #fff;
+        color: #000;
+        font-size: 10px;
+        border-radius: 20px;
+        width: 40vw;
+        padding: 20px 30px;
+
+        margin-top: -100px !important;
+      }
+
+      .test h2 , h3{
+        color: #000 ;
+      }
+
+      .questionnaire {
+        display: flex;
+        flex-wrap: wrap;
+        /*flex-direction: row;   Changed from column to row */
+        align-items: center;  /* Center items vertically */
+        justify-content: center; /* Align to the left */
+        margin: 40px auto;
+        max-width: 1200px;
+        padding: 0 20px;
+        gap: 40px; /* Space between image and text */}
+
+
+        
+     .bubble-side {
+      position: relative;
+      background: white;
+      color: black;
+      padding: 20px;
+      border-radius: 20px;
+      width: 300px;
+      margin: 100px auto;
+      font-family: sans-serif;
+    }
+
+    .bubble-side::before {
+      content: "";
+      color: #000000;
+      position: absolute;
+      left: -13px;
+      top: 9%;
+      border-width: 20px 20px 2px 0;
+      border-style: solid;
+      border-color: transparent white transparent transparent;
+    }
+
+
+
+
+        .img {
+        width: 240px; /* Fixed width instead of percentage */
+        height: auto;
+        position: relative;
+        top: -10vh; /* Adjusted to position the image */
+        margin: 0; /* Remove default margins */
+        }
+
+      /* Menu button styling */
+      .menu-btn {
+        background-color: #555;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        margin-left: 5px;
+        cursor: pointer;
+        border-radius: 50px;
+        font-size: 18px;
+        transition: font-size 0.2s, padding 0.2s;
+      }
+
+      .menu-btn:hover {
+        background-color: #777;
+      }
+
+      /* Dropdown container (hidden by default) */
+      .dropdown-content {
+        display: none; /* Hidden by default */
+        position: absolute;
+        right: 20px; /* adjust to match your header/nav position */
+        top: 60px;   /* adjust depending on your header height */
+        background-color: rgba(255, 255, 255, 0.285);
+        min-width: 150px;
+        box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+        z-index: 1000;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      /* Dropdown links inside the menu */
+      .dropdown-content a {
+        color: white;
+        padding: 10px 15px;
+        text-decoration: none;
+        display: block;
+        transition: background-color 0.3s ease;
+      }
+
+      .dropdown-content a:hover {
+        background: #205d80;
+      }
+
+      /* Hide mobile-only links on desktop, show desktop-only */
+.desktop-only { display: inline-block; }
+.mobile-only { display: none !important; }
+
+@media (max-width: 600px) {
+  .desktop-only { display: none !important; }
+  .mobile-only { display: block !important; }
+
+  .logo {
+    width: 130px; /* Wider for mobile so text fits */
+    font-size: 1em;
+    padding: 4px 6px;
+    margin-left: 0;
+    transition: all 0.2s;
+  }
+  .logo-icon {
+    font-size: 1.2em;
+    padding: 2px 6px;
+  }
+  .logo span {
+    font-size: 1em;
+  }
+  .logo small {
+    font-size: 0.65em;
+  }
+  .menu-btn {
+    font-size: 1.2em;
+    padding: 7px 10px;
+  }
+}
+
+      @media (max-width: 900px) {
+  .header {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 5vw;
+  }
+  .logo {
+    margin-left: 0;
+  }
+  .nav-buttons {
+    gap: 10px;
+  }
+}
+@media (max-width: 600px) {
+  .header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 2vw;
+    gap: 0;
+  }
+  .logo {
+    margin-left: 0;
+    font-size: 0.95em;
+    width: px;
+    min-width: 0;
+    padding: 2px 3px;
+    transition: all 0.2s;
+  }
+  .logo-icon {
+    font-size: 1em;
+    padding: 2px 4px;
+    transition: all 0.2s;
+  }
+  .nav-buttons {
+    gap: 0;
+  }
+  .search-container,
+  .nav-btn {
+    display: none !important;
+  }
+  .menu-btn {
+    display: block;
+    margin-left: 0;
+    font-size: 1.2em;
+    padding: 8px 12px;
+  }
+  .dropdown-content {
+    right: 0;
+    left: unset;
+    top: 45px;
+    min-width: 120px;
+    width: 60vw;
+    border-radius: 0 0 10px 10px;
+    background: rgba(32,93,128,0.98);
+    box-shadow: 0 8px 24px rgba(32,93,128,0.25);
+  }
+  .dropdown-content a,
+  .dropdown-content .search-container {
+    color: #fff;
+    padding: 12px 16px;
+    font-size: 1em;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: block;
+    width: 100%;
+  }
+  .dropdown-content .search-container {
+    display: block !important;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .dropdown-content .search-box {
+    width: 90vw;
+    margin: 0 auto 10px auto;
+    font-size: 1em;
+  }
+  .main-name h1 {
+    font-size: 1.2rem;
+  }
+  .main-name h2 {
+    font-size: 0.9rem;
+  }
+  .input-container form {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: 0 2vw;
+  }
+  .studyHoursInput {
+    width: 45vw;
+    min-width: 80px;
+    font-size: 0.95em;
+    padding: 8px;
+    margin-top: 0;
+  }
+  .predictButton {
+    font-size: 0.95em;
+    padding: 8px 12px;
+    margin-top: 0;
+    min-width: 70px;
+  }
+  .questionnaire {
+    gap: 10px;
+    padding: 0 2vw;
+    margin: 20px auto;
+  }
+  .img {
+    width: 90px;
+    height: auto;
+    top: 0;
+  }
+  .test {
+    width: 60vw;
+    font-size: 0.8em;
+    padding: 10px 10px;
+    margin-top: -30px !important;
+  }
+ 
+  footer {
+    padding: 10px 0;
+    margin-top: 20px;
+    margin-bottom: 2px;
+  }
+  footer span {
+    font-size: 0.9em !important;
+  }
+  footer .logo-icon {
+    font-size: 1em !important;
+  }
+}
+
+/* --- Extra small screens: 320px and below --- */
+@media (max-width: 320px) {
+  .logo {
+    width: 60px;
+    font-size: 0.7em;
+    padding: 1px 2px;
+  }
+  .logo-icon {
+    font-size: 0.8em;
+    padding: 1px 2px;
+  }
+  .main-name h1 {
+    font-size: 1em;
+  }
+  .main-name h2 {
+    font-size: 0.7em;
+  }
+  .input-container form {
+    gap: 4px;
+    margin: 0 1vw;
+  }
+  .studyHoursInput {
+    width: 38vw;
+    min-width: 50px;
+    font-size: 0.8em;
+    padding: 6px;
+  }
+  .predictButton {
+    font-size: 0.8em;
+    padding: 6px 8px;
+    min-width: 50px;
+  }
+  .img {
+    width: 60px;
+  }
+  .test {
+    width: 45vw;
+    font-size: 0.7em;
+    padding: 6px 6px;
+    margin-top: -15px !important;
+  }
+
+  footer {
+    padding: 6px 0;
+    margin-top: 10px;
+  }
+  footer span {
+    font-size: 0.7em !important;
+  }
+  footer .logo-icon {
+    font-size: 0.7em !important;
+  }
+}
+
+#mobileSearchBox input {
+  width: 90%;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 8px;
+}
+#mobileSearchBox button {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  background: #667eea;
+  color: #fff;
+  font-size: 1em;
+}
+    </style>
+  </head>
+  <body style="background: linear-gradient(135deg, #205d80 15%, #000000 35%); min-height: 100vh; margin:0; display: flex; flex-direction: column; min-height: 100vh;">
+
+<!-- HEADER (BOOTSTRAP NAVBAR) -->
+<nav class="navbar navbar-expand-lg" style="background: rgba(32,93,128,0.97); box-shadow: 0 2px 8px rgba(32,93,128,0.12);">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="/" style="font-weight: bold; color: #ffd700;">
+      <span style="font-size:1.1em; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 2px 7px; color:white;">📊</span>
+      <span style="font-size:0.95em; line-height:1;">
+  EMEASO
+  <span style="font-size:0.6em; color:#fff; display:block; line-height:1; margin-top:-2px;">analysis</span>
+</span>
+    </a>
+    <button class="navbar-toggler" type="button" onclick="toggleDropdown()" aria-label="Toggle navigation">
+  <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+</button>
+    <div class="collapse navbar-collapse" id="navbarScroll">
+      <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+        <li class="nav-item">
+          <a class="nav-link active" style="color:#ffd700;" aria-current="page" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" style="color:#fff;" href="/calculation">Calculations</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" style="color:#fff;" href="/chart">Charts</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" style="color:#fff;" href="/show-data">Source Data</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" style="color:#fff;" href="/contact">Contact</a>
+        </li>
+      </ul>
+      <form class="d-flex" role="search" onsubmit="event.preventDefault(); triggerSearch('navSearch');">
+        <input class="form-control me-2" id="navSearch" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-warning" type="submit">Search</button>
+      </form>
+    </div>
+    <!-- Dropdown for mobile -->
+    <div class="dropdown-content" id="menuDropdown">
+      <a href="/">Home</a>
+      <a href="/calculation">Calculations</a>
+      <a href="/chart">Charts</a>
+      <a href="/show-data">Source Data</a>
+      <a href="/contact">Contact</a>
+      <form class="d-flex mt-2 px-2" onsubmit="event.preventDefault(); triggerSearch('mobileSearchInput');">
+        <input class="form-control me-2" id="mobileSearchInput" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-warning" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN NAME -->
+<div class="main-name py-3 text-center">
+  <h1 id="title" style="color:#ffd700; font-size:2.2rem;"></h1>
+  <h2 style="font-size:1.1rem;">ADD A VALUE TO PREDICT...</h2>
+</div>
+
+<!-- INPUT FORM -->
+<div class="input-container mb-3 d-flex justify-content-center">
+  <form method="post" class="d-flex flex-row gap-2" style="max-width:400px;width:100%;">
+    <input type="hidden" id="hiddenname" name="model_type"/>
+    <input type="number" name="input_value" class="form-control" placeholder="Enter study hours" style="flex:1; min-width:90px;">
+    <button type="submit" class="btn btn-success" style="min-width:100px;">Predict</button>
+  </form>
+</div>
+
+<!-- QUESTIONNAIRE BUBBLE + IMAGE -->
+<div class="container my-4">
+  <div class="row justify-content-center align-items-center flex-wrap flex-md-nowrap">
+    <div class="col-12 col-md-auto d-flex justify-content-center mb-3 mb-md-0">
+      <img class="img-fluid rounded shadow" src="../../static/images/POWER (2).png" alt="questioneer" style="width:180px;max-width:80vw;">
+    </div>
+    <div class="col-12 col-md-auto d-flex justify-content-center">
+      <div id="bubblePrompt" class="bubble-side">
+        <h2 id="questionPrompt" style="margin:0; font-size:1.1em; font-weight:bold; color:#222;">
+          <!-- The result/advice will be injected here by JS -->
+          WHAT WILL YOU LIKE TO CALCULATE?
+        </h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-dark text-light text-center py-3" style="margin-top:auto;">
+  <div class="d-flex align-items-center justify-content-center gap-2">
+    <span style="font-size:1.5em;">📊</span>
+    <span>EMEASO PROSPER ANALYSIS &copy; {{ year or "2025" }}</span>
+  </div>
+</footer>
+
+<!-- Bubble CSS and Responsive Transform -->
+<style>
+  .bubble-side, .bubble-top {
+    position: relative;
+    background: #fff;
+    color: #222;
+    padding: 22px 22px;
+    border-radius: 20px;
+    width: 300px;
+    max-width: 96vw;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 4px 24px rgba(32,93,128,0.11);
+    margin: 0 auto;
+    transition: all 0.3s;
+  }
+  .bubble-side::before, .bubble-top::before {
+    content: "";
+    position: absolute;
+    display: block;
+  }
+  .bubble-side::before {
+    left: -18px;
+    top: 20px;
+    border-width: 18px 18px 2px 0;
+    border-style: solid;
+    border-color: transparent #fff transparent transparent;
+  }
+  .bubble-top::before {
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 0 20px 20px 20px;
+    border-style: solid;
+    border-color: transparent transparent #fff transparent;
+  }
+  @media (max-width: 700px) {
+    .row.flex-md-nowrap {
+      flex-direction: column !important;
+    }
+    #bubblePrompt {
+      margin-top: 16px;
+    }
+  }
+  @media (max-width: 600px) {
+    .bubble-side { display: none !important; }
+    .bubble-top { display: block !important; }
+    body {
+      background: linear-gradient(135deg, #205d80 20%, #000000 80%);
+      min-height: 100vh;
+    }
+  }
+  @media (min-width: 601px) {
+    .bubble-side { display: block !important; }
+    .bubble-top { display: none !important; }
+  }
+</style>
+
+<script>
+  // Responsive Bubble Switcher
+  function updateBubbleType() {
+    const bubbleSide = document.getElementById('bubblePrompt');
+    if(window.innerWidth <= 600) {
+      if(!bubbleSide.classList.contains('bubble-top')) {
+        bubbleSide.classList.remove('bubble-side');
+        bubbleSide.classList.add('bubble-top');
+      }
+    } else {
+      if(!bubbleSide.classList.contains('bubble-side')) {
+        bubbleSide.classList.remove('bubble-top');
+        bubbleSide.classList.add('bubble-side');
+      }
+    }
+  }
+  window.addEventListener('resize', updateBubbleType);
+  window.addEventListener('DOMContentLoaded', updateBubbleType);
+
+  // Search function for header and mobile
+  function triggerSearch(inputId) {
+    let q = "";
+    if (inputId && document.getElementById(inputId)) {
+      q = document.getElementById(inputId).value.trim().toLowerCase();
+    } else if (document.getElementById('navSearch')) {
+      q = document.getElementById('navSearch').value.trim().toLowerCase();
+    }
+    const pageMap = {
+      "home": "/",
+      "calculations": "/calculation",
+      "calculation": "/calculation",
+      "charts": "/chart",
+      "chart": "/chart",
+      "contact": "/contact",
+      "show data": "/show-data",
+      "prediction": "/prediction"
+    };
+    if (pageMap[q]) {
+      window.location.href = pageMap[q];
+    } else {
+      alert("No matching page found.");
+    }
+  }
+  // For mobile search button
+  function triggerMobileSearch() {
+    triggerSearch();
+  }
+</script>
+    <script>
+      // Add this to prediction.html to use the stored value
+    window.onload = function() {
+        const selectedValue = localStorage.getItem('selectedCalculation');
+        const inputPlaceholder = localStorage.getItem('inputPlaceholder') || "Enter value";
+        const questionPrompt = localStorage.getItem('questionPrompt') || "WHAT WILL YOU LIKE TO CALCULATE?";
+        const resultSentence = localStorage.getItem('resultSentence') || "If you enter {input}, you are likely to score {output} in your exam.";
+
+        // Set the input placeholder
+        const inputBox = document.querySelector('input[name="input_value"]');
+        if (inputBox) inputBox.placeholder = inputPlaceholder;
+
+        // Set the question prompt or result sentence in the bubble
+        {% if linear_prediction is not none %}
+            const inputValue = "{{ input_value }}";
+            const outputValue = parseInt("{{ linear_prediction }}");
+            let sentence = resultSentence
+                .replace("{input}", inputValue)
+                .replace("{output}", outputValue);
+
+            // For exercise frequency, make sure it's realistic
+            if (selectedValue === "EXERCISE FREQUENCY") {
+                let days = parseInt(inputValue, 10);
+                if (days > 7) days = 7;
+                if (days < 0) days = 0;
+                sentence = `If you exercise for ${days} day${days === 1 ? '' : 's'} per week, you are likely to score ${outputValue} in your exam.`;
+            }
+
+            // Add advice based on score
+            let advice = "";
+            if (outputValue >= 100) {
+                advice = " Excellent! Keep it up!";
+            } else if (outputValue >= 80) {
+                advice = " Great job! Add a little more effort for perfection.";
+            } else if (outputValue >= 51) {
+                advice = " You're doing okay, but you should put in more effort.";
+            } else if (outputValue === 50) {
+                advice = " You're at the average mark. You are not meant to be average—keep pushing!";
+            } else {
+                advice = " You did poorly. Please increase your effort and try again!";
+            }
+            document.getElementById("questionPrompt").innerHTML = sentence + "<br><span style='color:#3eb942;font-weight:600'>" + advice + "</span>";
+        {% else %}
+            document.getElementById("questionPrompt").textContent = questionPrompt;
+        {% endif %}
+    }
+
+    // Dropdown toggle function
+  function toggleDropdown() {
+  const dropdown = document.getElementById("menuDropdown");
+  dropdown.style.display =
+    dropdown.style.display === "block" ? "none" : "block";
+}
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+  const dropdown = document.getElementById("menuDropdown");
+  const btn = document.querySelector('.navbar-toggler');
+  if (dropdown && dropdown.style.display === "block" && !dropdown.contains(event.target) && !btn.contains(event.target)) {
+    dropdown.style.display = "none";
+  }
+});
+const pageMap = {
+  "home": "/",
+  "calculations": "/calculation.html",
+  "charts": "/chart",
+  "contact": "//contact",
+  "show data": "/show-data",
+  "prediction": "/prediction"
+};
+function triggerSearch() {
+  const q = document.querySelector('.search-box').value.trim().toLowerCase();
+  for (let key in pageMap) {
+    if (q === key) {
+      window.location.href = pageMap[key];
+      return;
+    }
+  }
+  alert("No matching page found.");
+}
+function quickSearch(query) {
+  const suggestions = document.getElementById("searchSuggestions");
+  suggestions.innerHTML = "";
+  if (!query) return suggestions.style.display = "none";
+  let found = Object.keys(pageMap).filter(k => k.includes(query.toLowerCase()));
+  if (!found.length) return suggestions.style.display = "none";
+  suggestions.innerHTML = found.map(k => `<div class="search-suggestion" onclick="window.location.href='${pageMap[k]}'">${k.charAt(0).toUpperCase()+k.slice(1)}</div>`).join('');
+  suggestions.style.display = "block";
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-container'))
+    document.getElementById('searchSuggestions').style.display = "none";
+});
+
+function showMobileSearch(event) {
+  event.preventDefault();
+  var box = document.getElementById('mobileSearchBox');
+  box.style.display = box.style.display === "block" ? "none" : "block";
+  if (box.style.display === "block") {
+    document.getElementById('mobileSearchInput').focus();
+  }
+}
+
+function triggerMobileSearch() {
+  const q = document.getElementById('mobileSearchInput').value.trim().toLowerCase();
+  const pageMap = {
+    "home": "/",
+    "calculations": "/calculation.html",
+    "calculation": "/calculation.html",
+    "charts": "/chart",
+    "chart": "/chart",
+    "contact": "/contact",
+    "show data": "/show-data",
+    "prediction": "/prediction"
+  };
+  for (let key in pageMap) {
+    if (q === key) {
+      window.location.href = pageMap[key];
+      return;
+    }
+  }
+  alert("No matching page found.");
+}
+    </script>
+  </body>
+</html>
+
+<script>
+document.querySelector('.input-container form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const inputBox = document.querySelector('input[name="input_value"]');
+  const inputValue = inputBox.value;
+  const modelType = document.getElementById('hiddenname').value || localStorage.getItem('selectedCalculation') || "SCREEN TIME";
+  if (!inputValue) return;
+
+  // Call your API endpoint
+  const res = await fetch('/api/predict', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({input_value: inputValue, model_type: modelType})
+  });
+  const data = await res.json();
+
+  if (data.error) {
+    document.getElementById("questionPrompt").innerHTML = `<span style="color:red;">${data.error}</span>`;
+    return;
+  }
+
+  let sentence = "";
+  let advice = "";
+  const outputValue = parseInt(data.prediction);
+
+  // Data-driven contextual feedback
+  switch (modelType) {
+    case "STUDY HOURS":
+      sentence = `If you study for <b>${data.input}</b> hour${data.input == 1 ? "" : "s"} per day, you are likely to score <b>${outputValue}</b> in your exam.`;
+      if (data.input < 2) advice = "At this rate, your performance will likely be poor. Try to increase your study hours!";
+      else if (data.input < 4) advice = "You may have an average score. Consider studying a bit more for better results.";
+      else if (data.input < 6) advice = "You're on track for a good score. Keep it up!";
+      else advice = "Excellent study habits! You're likely to excel.";
+      break;
+    case "EXERCISE FREQUENCY":
+      let days = parseInt(data.input, 10);
+      if (days > 7) days = 7;
+      if (days < 0) days = 0;
+      sentence = `If you exercise for <b>${days}</b> day${days === 1 ? "" : "s"} per week, you are likely to score <b>${outputValue}</b> in your exam.`;
+      if (days < 2) advice = "Low exercise frequency may affect your performance. Try to be more active!";
+      else if (days < 5) advice = "Average exercise. You can do better with a bit more activity.";
+      else advice = "Great! Regular exercise supports top performance.";
+      break;
+    case "DIET QUALITY":
+      let quality = "Unknown";
+      if (data.input == 1) quality = "Poor";
+      else if (data.input == 2) quality = "Average";
+      else if (data.input == 3) quality = "Good";
+      sentence = `If your diet quality is <b>${quality}</b>, you are likely to score <b>${outputValue}</b> in your exam.`;
+      if (data.input == 1) advice = "Poor diet may limit your academic performance. Improve your nutrition!";
+      else if (data.input == 2) advice = "Average diet. Try to eat healthier for better results.";
+      else if (data.input == 3) advice = "Great diet! This will help you perform at your best.";
+      break;
+    case "SCREEN TIME":
+      sentence = `If your screen time is <b>${data.input}</b> hour${data.input == 1 ? "" : "s"} per day, you are likely to score <b>${outputValue}</b> in your exam.`;
+      if (data.input > 6) advice = "High screen time may hurt your performance. Try to reduce it!";
+      else if (data.input > 4) advice = "Average screen time. Reducing it further can help you focus.";
+      else advice = "Great! Low screen time supports better results.";
+      break;
+    case "MENTAL HEALTH":
+      sentence = `If your mental health rating is <b>${data.input}</b> (1-10), you are likely to score <b>${outputValue}</b> in your exam.`;
+      if (data.input < 5) advice = "Poor mental health may affect your performance. Seek support if needed.";
+      else if (data.input < 8) advice = "Average mental health. Take care of yourself for even better results.";
+      else advice = "Excellent mental health! This will help you succeed.";
+      break;
+    default:
+      sentence = `If you enter <b>${data.input}</b>, you are likely to score <b>${outputValue}</b> in your exam.`;
+      advice = "";
+  }
+
+  document.getElementById("questionPrompt").innerHTML = sentence + "<br><span style='color:#3eb942;font-weight:600'>" + advice + "</span>";
+});
+</script>
